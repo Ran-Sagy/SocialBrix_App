@@ -1,0 +1,15 @@
+{
+  "morning": [
+    "Good morning",
+    "Wakey, wakey",
+    "Guten Morgen",
+    "Rise and shine",
+    "Morning",
+    "Top of the morning to you",
+    "Have a great day"
+  ],
+
+  "day": ["Hiya", "Good day", "Howdy", "Hello there"],
+
+  "evening": ["Good evening", "Good night"]
+}

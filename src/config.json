@@ -1,0 +1,4 @@
+{
+  "apiUrl": "http://localhost:3500/v1/api",
+  "companyLogo": "https://res.cloudinary.com/prodme-app-cloud-6/image/upload/c_scale,w_200/v1635585368/Kaching/octo_pd7ko2.png"
+}
