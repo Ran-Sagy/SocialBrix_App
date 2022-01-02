@@ -13,7 +13,8 @@ import { CgLockUnlock } from "react-icons/cg";
 import { MdDashboard, MdSettings } from "react-icons/md";
 import { IoAnalyticsSharp } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth, AdminPortal } from "@frontegg/react";
 
 import { useSelector } from "react-redux";
 import SearchBox from "../Components/Search/SearchBox";
@@ -21,7 +22,8 @@ import SearchBox from "../Components/Search/SearchBox";
 const { Header } = Layout;
 
 function TheHeader({ userDetails }) {
-  const { user, isAuthenticated, isLoading, logout } = useAuth0();
+  const { user } = useAuth();
+  // const { user, isAuthenticated, isLoading, logout } = useAuth0();
   const fetching = useSelector((state) => state.fetching);
   const userData = useSelector((state) => state.currentUserData);
   const [selectedNavBarItem, setSelectedNavBarItem] = useState("dashboard");
@@ -31,9 +33,16 @@ function TheHeader({ userDetails }) {
   // console.log("currentUser", userDetails);
 
   const handleLogOut = () => {
-    logout();
     logoutAndRemoveToken();
-    window.location = "/login";
+    setTimeout(() => {
+      window.location = "/account/logout";
+    }, 1000);
+
+    // logout({ federated: true });
+    // setTimeout(() => {
+    //   logoutAndRemoveToken();
+    //   window.location = "/login";
+    // }, 2000);
   };
 
   const setSelectedNavItem = (item) => {
@@ -47,9 +56,9 @@ function TheHeader({ userDetails }) {
   const avatarMenu = (
     <Menu>
       <Menu.Item key="1" icon={<FiUser />} title="Profile">
-        <Link to="/profile">
-          <div className="menu-row">Profile</div>
-        </Link>
+        <div onClick={() => AdminPortal.show()} className="menu-row">
+          Profile
+        </div>
       </Menu.Item>
       <Menu.Item key="3" icon={<CgLockUnlock />} title="Upgrade">
         <Link to="/profile">
@@ -137,7 +146,7 @@ function TheHeader({ userDetails }) {
               <Button type="text">
                 <span className="header-user-avatar">
                   <Avatar
-                    src={user?.picture}
+                    src={user?.profilePictureUrl}
                     name={user?.name}
                     size={28}
                     color={"#32c56e"}

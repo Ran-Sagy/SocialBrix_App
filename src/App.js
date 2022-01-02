@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Redirect } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+import { Switch, Redirect, useHistory } from "react-router-dom";
+// import { useAuth0 } from "@auth0/auth0-react";
 import ProtectedRoute from "./Components/Utils/ProtectedRoute";
 import { Layout } from "antd";
 import Login from "./Components/Login/Login";
 import TheHeader from "./Main_Components/TheHeader";
-import { isUserConnected } from "./Services/userService";
+import { isUserConnected, login } from "./Services/userService";
 // import loadingAnimation from "./assets/65395-blockchain-animation-2.json";
 import loadingAnimation2 from "./assets/64390-social-media-icons.json";
 import socialHero from "./assets/social-hero.json";
@@ -13,44 +13,72 @@ import socialHero from "./assets/social-hero.json";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setCurrentUserData } from "./actions/user.actions";
 import Dashboard from "./Components/Dashboard/Dashboard";
-import { setFetchingStage } from "./actions/fetching.actions";
 import Lottie from "react-lottie-player";
-import { fetchInstagranData } from "./Services/instagramService";
 import Analytics from "./Components/analytics/Analytics";
+import { useAuth } from "@frontegg/react";
+// import {  useAuthUser } from "@frontegg/react";
 
 const { Content } = Layout;
 
 function App() {
-  const { user } = useAuth0();
+  const history = useHistory();
+  const { user, isAuthenticated } = useAuth();
+  // const user = useAuthUser();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.currentUser);
   const fetching = useSelector((state) => state.fetching);
   console.log("currentUser", currentUser);
+  console.log("user", user);
+  console.log("isAuthenticated", isAuthenticated);
   const [initialLoad, setInitialLoad] = useState(false);
 
   useEffect(() => {
-    if (!isUserConnected() && !fetching) {
-      console.log("no user");
-      return <Redirect to="/login" />;
-    }
-    const getUser = async () => {
-      setInitialLoad(true);
-      setTimeout(async () => {
-        const data = await isUserConnected();
-        dispatch(setCurrentUser(data));
-        setInitialLoad(false);
-      }, 2000);
+    const tryToLogin = async () => {
+      const credentials = {
+        name: user?.name,
+        email: user?.email,
+        accessToken: user?.accessToken,
+        // accessToken: await getAccessTokenSilently(),
+      };
+      try {
+        const loginSet = await login(credentials);
+        const currentuser = {
+          email: user?.email,
+        };
+        dispatch(setCurrentUserData(currentuser));
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          // setLoading(false);
+          console.log(error);
+        }
+      }
     };
-    getUser();
+    if (isAuthenticated) {
+      tryToLogin();
+    }
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      dispatch(setCurrentUserData(user));
-    }
-  }, [user, dispatch]);
+  // useEffect(() => {
+  //   if (!isUserConnected() && !fetching) {
+  //     console.log("no user");
+  //     return <Redirect to="/account/login" />;
+  //   }
+  //   const getUser = async () => {
+  //     setInitialLoad(true);
+  //     setTimeout(async () => {
+  //       const data = await isUserConnected();
+  //       dispatch(setCurrentUser(data));
+  //       setInitialLoad(false);
+  //     }, 2000);
+  //   };
+  //   getUser();
+  // }, []);
 
-  useEffect(() => {}, []);
+  // useEffect(() => {
+  //   if (user) {
+  //     dispatch(setCurrentUserData(user));
+  //   }
+  // }, [user, dispatch]);
 
   if (initialLoad) {
     return (
@@ -66,7 +94,7 @@ function App() {
       </div>
     );
   } else {
-    if (Object.values(currentUser).length > 0) {
+    if (user) {
       return (
         <Layout>
           {/* <TheSidebar /> */}
@@ -74,13 +102,8 @@ function App() {
             <TheHeader userDetails={currentUser} />
             <Content className="content">
               <Switch>
-                <Dashboard path={"/dashboard"} user={user} />
                 <Analytics path={"/analytics"} user={user} />
-                {/* <ProtectedRoute
-                path={"/campaigns"}
-                component={<Campaigns />}
-                permission={"company"}
-              /> */}
+                <Dashboard path={"/"} user={user} />
               </Switch>
             </Content>
           </Layout>
@@ -90,9 +113,10 @@ function App() {
       return (
         <>
           {fetching ? "fetching..." : ""}
-          <Switch>
-            <Login path="/" />
-          </Switch>
+          {/* <Switch>
+            <Login path="/removethis" />
+          </Switch> */}
+          <Redirect to="/account/login" />
         </>
       );
   }

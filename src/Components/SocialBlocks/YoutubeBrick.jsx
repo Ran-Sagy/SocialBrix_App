@@ -9,26 +9,26 @@ import analyzing from "../../assets/analyzing.json";
 import { fetchInstagranData } from "../../Services/instagramService";
 import { getGrowthByPersentage } from "../Utils/calculations";
 import { assetTypeIcons } from "../Utils/socialIcons";
+import { fetchTiktokData } from "../../Services/tiktokService";
+import { fetchYoutubeData } from "../../Services/youtubeService";
 
-function InstagramBrick({
+function YoutubeBrick({
   fetching = false,
-  instagram_username,
+  youtube_channel_id,
   id,
   assetType,
   db,
   user,
-  fetchBlocksAgain,
-  reFetchBricks,
 }) {
   const params = {
-    username: instagram_username,
+    youtube_channel_id: youtube_channel_id,
     email: user?.email,
   };
 
   console.log("params", params);
-  const { data: instagramLiveData, status } = useQuery(
-    ["instagramLiveData", params],
-    fetchInstagranData,
+  const { data: youtubeLiveData, status } = useQuery(
+    ["youtubeLiveData", params],
+    fetchYoutubeData,
     {
       enabled: !!user?.email,
       staleTime: 60000 * 60 * 24, // 24 hours
@@ -40,21 +40,25 @@ function InstagramBrick({
 
   const { Meta } = Card;
 
-  const blockData = instagramLiveData?.data?.data;
-  const graph = instagramLiveData?.data?.graph;
+  const blockData = youtubeLiveData?.data?.data;
+  const graph = youtubeLiveData?.data?.graph;
 
-  console.log("blockData-insta", blockData);
-  // console.log("graph123", graph);
-  // console.log("db", db);
+  console.log("blockData-youtube", blockData);
+  console.log("db", db);
 
   const growth = getGrowthByPersentage(
-    db?.last_followers_count,
-    blockData?.followers
+    db?.last_subscribers_count,
+    blockData?.statistics?.subscriberCount
   );
 
+  console.log("db.graph", db.graph);
   let graphData = [];
   graph?.map((event) =>
-    graphData.push({ date: event.date, followers: event.followers })
+    graphData.push({
+      name: blockData?.user?.uniqueId,
+      date: event.date,
+      followers: event.followers,
+    })
   );
   console.log("graphData", graphData);
 
@@ -63,23 +67,29 @@ function InstagramBrick({
   // }, [blockData]);
 
   return (
-    <div key={id} className="instagram-brick socialBlock">
+    <div key={id} className="youtube-brick socialBlock">
       <Badge.Ribbon text={assetTypeIcons[assetType]}>
         <Card
           hoverable
-          loading={fetching || !blockData || !blockData?.full_name}
+          loading={fetching || !blockData || !blockData?.snippet?.title}
           actions={[
             <div className="socialBlock-green">
               {!fetching && (
                 <span className="socialBlock-green-green">
-                  {blockData?.followers?.toLocaleString()} Folowers
+                  {Number(
+                    blockData?.statistics?.subscriberCount
+                  ).toLocaleString()}{" "}
+                  {blockData?.statistics?.subscriberCount < 99999999
+                    ? "Subscribers"
+                    : "Subs"}
                 </span>
               )}
             </div>,
             <div className="explore-deadline">
               {!fetching && (
                 <span className="margin-left">
-                  {blockData?.following?.toLocaleString()} following
+                  {Number(blockData?.statistics?.viewCount).toLocaleString()}{" "}
+                  Views
                 </span>
               )}
             </div>,
@@ -104,14 +114,14 @@ function InstagramBrick({
           <Meta
             avatar={
               <Avatar
-                src={blockData?.profile_pic_url_proxy}
+                src={blockData?.snippet?.thumbnails?.default?.url}
                 size={60}
                 round={false}
               />
             }
-            title={blockData?.full_name}
-            description={`${blockData?.bio?.substring(0, 40)}${
-              blockData?.bio?.length > 40 ? "..." : ""
+            title={blockData?.snippet?.title}
+            description={`${blockData?.snippet?.description.substring(0, 40)}${
+              blockData?.snippet?.description.length > 40 ? "..." : ""
             }`}
           />
           <div className={"margin-top-2"}>
@@ -124,6 +134,7 @@ function InstagramBrick({
                     stroke="#32c56e"
                     strokeWidth={2}
                   />
+                  <Line type="monotone" dataKey="engagment" stroke="#82ca9d" />
                   <Tooltip />
                 </LineChart>
               </ResponsiveContainer>
@@ -153,4 +164,4 @@ function InstagramBrick({
   );
 }
 
-export default InstagramBrick;
+export default YoutubeBrick;

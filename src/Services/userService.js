@@ -34,8 +34,9 @@ export async function login(credentials) {
     "authorization"
   ] = `Bearer ${credentials.accessToken}`;
   const { data } = await axios.post(`${apiUrl}/auth`, credentials);
-  localStorage.setItem(tokenKey, data.token);
   localStorage.setItem("whodis", data.email);
+  localStorage.setItem(tokenKey, data.token);
+  return data;
 }
 
 export async function signup(credentials) {

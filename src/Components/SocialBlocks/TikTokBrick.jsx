@@ -17,7 +17,7 @@ function TikTokBrick({
   id,
   assetType,
   db,
-  currentUserData,
+  user,
   fetchBlocksAgain,
   reFetchBricks,
 }) {
@@ -26,7 +26,7 @@ function TikTokBrick({
 
   const params = {
     username: tiktok_username,
-    email: currentUserData?.email,
+    email: user?.email,
   };
 
   console.log("params", params);
@@ -34,7 +34,7 @@ function TikTokBrick({
     ["tiktokLiveData", params],
     fetchTiktokData,
     {
-      enabled: !!currentUserData,
+      enabled: !!user?.email,
       staleTime: 60000 * 60 * 24, // 24 hours
       retry: 1,
       cacheTime: 60000 * 60 * 24,
@@ -44,50 +44,50 @@ function TikTokBrick({
 
   const { Meta } = Card;
 
-  const blockData = tiktokLiveData?.data; // dev
-  // const blockData = instagramLiveData?.data; // prod
+  const blockData = tiktokLiveData?.data.data; // dev
+  const graph = tiktokLiveData?.data?.graph;
 
   console.log("blockData", blockData);
   console.log("db", db);
 
   const growth = getGrowthByPersentage(
     db?.last_followers_count,
-    blockData?.stats.followerCount
+    blockData?.stats?.followerCount
   );
 
   console.log("db.graph", db.graph);
   let graphData = [];
-  db.graph.map((event) =>
+  graph?.map((event) =>
     graphData.push({
-      name: blockData?.user.uniqueId,
+      name: blockData?.user?.uniqueId,
       date: event.date,
       followers: event.followers,
     })
   );
   console.log("graphData", graphData);
 
-  useEffect(() => {
-    fetchBlocksAgain(reFetchBricks + 1);
-  }, [blockData]);
+  // useEffect(() => {
+  //   fetchBlocksAgain(reFetchBricks + 1);
+  // }, [blockData]);
 
   return (
     <div key={id} className="tiktok-brick socialBlock">
       <Badge.Ribbon text={assetTypeIcons[assetType]}>
         <Card
           hoverable
-          loading={fetching || !blockData || !blockData?.user.uniqueId}
+          loading={fetching || !blockData || !blockData?.user?.uniqueId}
           actions={[
             <div className="socialBlock-green">
               {!fetching && (
                 <span className="socialBlock-green-green">
-                  {blockData?.stats.followerCount} Folowers
+                  {blockData?.stats?.followerCount.toLocaleString()} Folowers
                 </span>
               )}
             </div>,
             <div className="explore-deadline">
               {!fetching && (
                 <span className="margin-left">
-                  {blockData?.stats.followingCount} following
+                  {blockData?.stats?.heart.toLocaleString()} Hearts
                 </span>
               )}
             </div>,
@@ -112,19 +112,19 @@ function TikTokBrick({
           <Meta
             avatar={
               <Avatar
-                src={blockData?.user.avatarLarger}
+                src={blockData?.user?.avatarLarger}
                 size={60}
                 round={false}
               />
             }
-            title={blockData?.user.uniqueId}
-            description={`${blockData?.user.signature.substring(0, 40)}${
-              blockData?.user.signature.length > 40 ? "..." : ""
+            title={blockData?.user?.uniqueId}
+            description={`${blockData?.user?.signature.substring(0, 40)}${
+              blockData?.user?.signature.length > 40 ? "..." : ""
             }`}
           />
           <div className={"margin-top-2"}>
             {graphData.length > 1 ? (
-              <ResponsiveContainer width="100%" height={150}>
+              <ResponsiveContainer width="100%" height={75}>
                 <LineChart width={300} height={100} data={graphData}>
                   <Line
                     type="monotone"

@@ -6,6 +6,7 @@
     "@auth0/auth0-react": "^1.8.0",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
+    "@frontegg/react": "^4.0.3",
     "@lottiefiles/react-lottie-player": "^3.4.1",
     "@mui/material": "^5.0.0",
     "@testing-library/jest-dom": "^5.14.1",
