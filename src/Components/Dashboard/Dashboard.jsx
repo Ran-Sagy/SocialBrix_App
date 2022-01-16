@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Button, Dropdown, Menu, Empty } from "antd";
+import { Row, Col, Button, Dropdown, Menu, Empty, Modal } from "antd";
 import * as text from "../../constants/dashboard.json";
 import greet from "../../Utils/greeter";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +24,7 @@ import {
   fetchYoutubeChannel,
 } from "../../Services/youtubeService";
 import YoutubeBrick from "../SocialBlocks/YoutubeBrick";
+import { AnimatePresence } from "framer-motion";
 
 function Dashboard({ user }) {
   const dispatch = useDispatch();
@@ -31,9 +32,20 @@ function Dashboard({ user }) {
   const fetching = useSelector((state) => state.fetching);
   const [userBricks, setUserBricks] = useState([]);
   const [reFetchBricks, setReFetchBricks] = useState(0);
-  const [email, setEmail] = useState(null);
+  // const [email, setEmail] = useState(null);
+  const [selectedbrick, setSelectedBrick] = useState(null);
+  const [greetResult, setGreetResult] = useState(false);
 
   console.log("user", user);
+  console.log("selectedId", selectedbrick);
+
+  useEffect(() => {
+    let createGreet = greet(
+      user ? user.name : "unknown",
+      new Date().getHours()
+    );
+    setGreetResult(createGreet);
+  }, [user]);
 
   useEffect(() => {
     const fetchUserBricks = async () => {
@@ -46,7 +58,7 @@ function Dashboard({ user }) {
     };
 
     fetchUserBricks();
-  }, [reFetchBricks]);
+  }, [reFetchBricks, dispatch, user]);
 
   // Drawer operators
 
@@ -245,90 +257,143 @@ function Dashboard({ user }) {
   //   );
   // } else {
   return (
-    <div className="site-card-wrapper dashboard-body">
-      <Row>
-        <Col xs={17} sm={18} md={20} lg={22} xl={22}>
-          <div className="greeting">
-            {greet(user ? user.name : "unknown", new Date().getHours())}
-          </div>
-          <div className="greeting-description">{text.greetingDescription}</div>
-        </Col>
-        <Col style={{ marginTop: "1rem" }} xs={7} sm={6} md={2} lg={2} xl={2}>
-          <Dropdown overlay={menu} placement="bottomRight">
-            <Button type="button" size={"middle"}>
-              Add Acount
-            </Button>
-          </Dropdown>
-        </Col>
-      </Row>
-      <Row justify="space-around">
-        {userBricks?.length === 0 && !fetching && (
-          <Empty
-            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-            imageStyle={{
-              height: 200,
-            }}
-            description={
-              <span className="empty-dashboard-text">
-                Connect you'r first asset!
-              </span>
-            }
-          >
+    <AnimatePresence>
+      <div className="site-card-wrapper dashboard-body">
+        <Row>
+          <Col xs={17} sm={18} md={20} lg={22} xl={22}>
+            <div className="greeting">{greetResult}</div>
+            <div className="greeting-description">
+              {text.greetingDescription}
+            </div>
+          </Col>
+          <Col style={{ marginTop: "1rem" }} xs={7} sm={6} md={2} lg={2} xl={2}>
             <Dropdown overlay={menu} placement="bottomRight">
               <Button type="button" size={"middle"}>
-                Connect Acount
+                Add Asset
               </Button>
             </Dropdown>
-          </Empty>
+          </Col>
+        </Row>
+        <Row justify="space-around">
+          {userBricks?.length === 0 && !fetching && (
+            <Empty
+              image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+              imageStyle={{
+                height: 200,
+              }}
+              description={
+                <span className="empty-dashboard-text">
+                  Connect you'r first asset!
+                </span>
+              }
+            >
+              <Dropdown overlay={menu} placement="bottomRight">
+                <Button type="button" size={"middle"}>
+                  Connect Asset
+                </Button>
+              </Dropdown>
+            </Empty>
+          )}
+          {userBricks.map((brick) => {
+            if (brick.type === "instagram") {
+              return (
+                <Col
+                  onClick={() => setSelectedBrick(brick)}
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  xl={8}
+                >
+                  <InstagramBrick
+                    assetType={brick.type}
+                    db={brick}
+                    instagram_username={brick.instagram_username}
+                    user={user}
+                  />
+                </Col>
+              );
+            } else if (brick.type === "tiktok") {
+              return (
+                <Col
+                  onClick={() => setSelectedBrick(brick)}
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  xl={8}
+                >
+                  <TikTokBrick
+                    assetType={brick.type}
+                    db={brick}
+                    tiktok_username={brick.tiktok_username}
+                    user={user}
+                  />
+                </Col>
+              );
+            } else if (brick.type === "youtube") {
+              return (
+                <Col
+                  onClick={() => setSelectedBrick(brick)}
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  xl={8}
+                >
+                  <YoutubeBrick
+                    assetType={brick.type}
+                    db={brick}
+                    youtube_channel_id={brick.youtube_channel_id}
+                    user={user}
+                  />
+                </Col>
+              );
+            } else {
+              return null;
+            }
+          })}
+        </Row>
+
+        {selectedbrick && (
+          <Modal
+            title={selectedbrick.type}
+            visible={selectedbrick}
+            footer={[]}
+            onOk={() => setSelectedBrick(null)}
+            onCancel={() => setSelectedBrick(null)}
+          >
+            {selectedbrick.type === "tiktok" ? (
+              <TikTokBrick
+                assetType={selectedbrick.type}
+                db={selectedbrick}
+                tiktok_username={selectedbrick.tiktok_username}
+                user={user}
+                expended={true}
+              />
+            ) : selectedbrick.type === "youtube" ? (
+              <YoutubeBrick
+                assetType={selectedbrick.type}
+                db={selectedbrick}
+                youtube_channel_id={selectedbrick.youtube_channel_id}
+                user={user}
+                expended={true}
+              />
+            ) : selectedbrick.type === "instagram" ? (
+              <InstagramBrick
+                assetType={selectedbrick.type}
+                db={selectedbrick}
+                instagram_username={selectedbrick.instagram_username}
+                user={user}
+                expended={true}
+              />
+            ) : (
+              "TBI"
+            )}
+          </Modal>
         )}
-        {userBricks.map((brick) => {
-          if (brick.type === "instagram") {
-            return (
-              // <div>insta</div>
-              <Col xs={8}>
-                <InstagramBrick
-                  assetType={brick.type}
-                  db={brick}
-                  instagram_username={brick.instagram_username}
-                  user={user}
-                  // reFetchBricks={reFetchBricks}
-                  // fetchBlocksAgain={setReFetchBricks}
-                />
-              </Col>
-            );
-          } else if (brick.type === "tiktok") {
-            return (
-              // <div>tiktok</div>
-              <Col xs={8}>
-                <TikTokBrick
-                  assetType={brick.type}
-                  db={brick}
-                  tiktok_username={brick.tiktok_username}
-                  user={user}
-                  // reFetchBricks={reFetchBricks}
-                  // fetchBlocksAgain={setReFetchBricks}
-                />
-              </Col>
-            );
-          } else if (brick.type === "youtube") {
-            return (
-              <Col xs={8}>
-                <YoutubeBrick
-                  assetType={brick.type}
-                  db={brick}
-                  youtube_channel_id={brick.youtube_channel_id}
-                  user={user}
-                  // reFetchBricks={reFetchBricks}
-                  // fetchBlocksAgain={setReFetchBricks}
-                />
-              </Col>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </Row>
-    </div>
+      </div>
+    </AnimatePresence>
   );
 }
 

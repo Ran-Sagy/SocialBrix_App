@@ -5,7 +5,7 @@ import { notification } from "antd";
 const openNotification = (message) => {
   notification.info({
     message: "Whooops!",
-    description: { message },
+    description: message,
     placement: "topRight",
     duration: 7,
   });

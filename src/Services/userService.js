@@ -1,7 +1,14 @@
 import http from "./httpService";
 import jwtDecode from "jwt-decode";
-import { apiUrl } from "../config.json";
+import { PROD_SERVER_URL, DEV_SERVER_URL } from "../config.json";
 import axios from "axios";
+
+const apiUrl =
+  process.env.NODE_ENV === "production"
+    ? PROD_SERVER_URL
+    : process.env.NODE_ENV === "development"
+    ? DEV_SERVER_URL
+    : DEV_SERVER_URL;
 
 const tokenKey = "user";
 
@@ -48,12 +55,12 @@ export function logoutAndRemoveToken() {
   localStorage.removeItem("whodis");
 }
 
-export async function updateProfilePic(userId, newPic) {
-  const { data } = await http.put(
-    `${apiUrl}/users/update-profile-picture/${userId}`,
-    newPic
-  );
-}
+// export async function updateProfilePic(userId, newPic) {
+//   const { data } = await http.put(
+//     `${apiUrl}/users/update-profile-picture/${userId}`,
+//     newPic
+//   );
+// }
 
 export async function getUserProfileData(userId) {
   return await http.get(`${apiUrl}/dashboard/getUserProfileData/${userId}`);

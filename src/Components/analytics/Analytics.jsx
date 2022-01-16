@@ -1,6 +1,6 @@
 import React from "react";
-import { fetchInstagranData } from "../../Services/instagramService";
-import { useQuery } from "react-query";
+// import { fetchInstagranData } from "../../Services/instagramService";
+// import { useQuery } from "react-query";
 import { QueryClient } from "react-query";
 
 const Analytics = () => {

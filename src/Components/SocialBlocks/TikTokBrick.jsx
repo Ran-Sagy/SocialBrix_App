@@ -1,15 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Card, Badge, Skeleton } from "antd";
+import React from "react";
+import { Card, Badge } from "antd";
 import Avatar from "react-avatar";
 import { AiOutlineCaretUp, AiOutlineCaretDown } from "react-icons/ai";
 import { useQuery } from "react-query";
-import { LineChart, Line, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Area,
+} from "recharts";
 import Lottie from "react-lottie-player";
 import analyzing from "../../assets/analyzing.json";
-import { fetchInstagranData } from "../../Services/instagramService";
+// import { fetchInstagranData } from "../../Services/instagramService";
 import { getGrowthByPersentage } from "../Utils/calculations";
 import { assetTypeIcons } from "../Utils/socialIcons";
 import { fetchTiktokData } from "../../Services/tiktokService";
+import moment from "moment";
 
 function TikTokBrick({
   fetching = false,
@@ -18,6 +27,7 @@ function TikTokBrick({
   assetType,
   db,
   user,
+  expended = false,
   fetchBlocksAgain,
   reFetchBricks,
 }) {
@@ -30,7 +40,7 @@ function TikTokBrick({
   };
 
   console.log("params", params);
-  const { data: tiktokLiveData, status } = useQuery(
+  const { data: tiktokLiveData } = useQuery(
     ["tiktokLiveData", params],
     fetchTiktokData,
     {
@@ -44,7 +54,7 @@ function TikTokBrick({
 
   const { Meta } = Card;
 
-  const blockData = tiktokLiveData?.data.data; // dev
+  const blockData = tiktokLiveData?.data.data;
   const graph = tiktokLiveData?.data?.graph;
 
   console.log("blockData", blockData);
@@ -54,13 +64,14 @@ function TikTokBrick({
     db?.last_followers_count,
     blockData?.stats?.followerCount
   );
+  console.log("growth", growth);
 
   console.log("db.graph", db.graph);
   let graphData = [];
   graph?.map((event) =>
     graphData.push({
       name: blockData?.user?.uniqueId,
-      date: event.date,
+      date: moment(event.date).format("DD/MM/yyyy"),
       followers: event.followers,
     })
   );
@@ -74,17 +85,18 @@ function TikTokBrick({
     <div key={id} className="tiktok-brick socialBlock">
       <Badge.Ribbon text={assetTypeIcons[assetType]}>
         <Card
+          className={expended ? "expended" : ""}
           hoverable
           loading={fetching || !blockData || !blockData?.user?.uniqueId}
           actions={[
             <div className="socialBlock-green">
               {!fetching && (
-                <span className="socialBlock-green-green">
+                <span className="socialBlock-grey-counter">
                   {blockData?.stats?.followerCount.toLocaleString()} Folowers
                 </span>
               )}
             </div>,
-            <div className="explore-deadline">
+            <div className="grey-counter">
               {!fetching && (
                 <span className="margin-left">
                   {blockData?.stats?.heart.toLocaleString()} Hearts
@@ -92,7 +104,7 @@ function TikTokBrick({
               )}
             </div>,
 
-            <div className="explore-deadline">
+            <div className="grey-counter">
               {growth > 0 && !fetching ? (
                 <span className="socialBlock-green-green">
                   ({growth}%) <AiOutlineCaretUp />
@@ -113,28 +125,37 @@ function TikTokBrick({
             avatar={
               <Avatar
                 src={blockData?.user?.avatarLarger}
-                size={60}
+                size={expended ? 80 : 60}
                 round={false}
               />
             }
             title={blockData?.user?.uniqueId}
-            description={`${blockData?.user?.signature.substring(0, 40)}${
-              blockData?.user?.signature.length > 40 ? "..." : ""
-            }`}
+            description={
+              !expended
+                ? `${blockData?.user?.signature.substring(0, 40)}${
+                    blockData?.user?.signature.length > 40 ? "..." : ""
+                  }`
+                : blockData?.user?.signature
+            }
           />
           <div className={"margin-top-2"}>
             {graphData.length > 1 ? (
-              <ResponsiveContainer width="100%" height={75}>
-                <LineChart width={300} height={100} data={graphData}>
-                  <Line
-                    type="monotone"
+              <ResponsiveContainer width="100%" height={expended ? 250 : 122}>
+                <AreaChart width={300} height={100} data={graphData}>
+                  <Area
+                    type="linear"
                     dataKey="followers"
-                    stroke="#32c56e"
-                    strokeWidth={2}
+                    stroke="#83B69F"
+                    fill="rgba(50, 197, 110, 0.1)"
+                    strokeWidth={3}
                   />
-                  <Line type="monotone" dataKey="engagment" stroke="#82ca9d" />
+                  {/* <Line type="monotone" dataKey="engagment" stroke="#82ca9d" /> */}
+                  {expended ? <CartesianGrid strokeDasharray="1 1" /> : null}
+                  {expended ? <XAxis dataKey={"date"} /> : null}
+                  {expended ? <YAxis /> : null}
                   <Tooltip />
-                </LineChart>
+                  {/* <Legend /> */}
+                </AreaChart>
               </ResponsiveContainer>
             ) : (
               <div className="graph-placeholder">
@@ -142,7 +163,7 @@ function TikTokBrick({
                   loop
                   play
                   style={{
-                    paddingTop: "10%",
+                    // paddingTop: "10%",
                     margin: "auto",
                     width: 100,
                     height: 100,

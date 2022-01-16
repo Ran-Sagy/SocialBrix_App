@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Card, Badge, Skeleton } from "antd";
+import React from "react";
+import { Card, Badge } from "antd";
 import Avatar from "react-avatar";
 import { AiOutlineCaretUp, AiOutlineCaretDown } from "react-icons/ai";
 import { useQuery } from "react-query";
-import { LineChart, Line, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  ResponsiveContainer,
+  Tooltip,
+  AreaChart,
+  Area,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
 import Lottie from "react-lottie-player";
 import analyzing from "../../assets/analyzing.json";
 import { fetchInstagranData } from "../../Services/instagramService";
@@ -17,6 +25,7 @@ function InstagramBrick({
   assetType,
   db,
   user,
+  expended = false,
   fetchBlocksAgain,
   reFetchBricks,
 }) {
@@ -26,7 +35,7 @@ function InstagramBrick({
   };
 
   console.log("params", params);
-  const { data: instagramLiveData, status } = useQuery(
+  const { data: instagramLiveData } = useQuery(
     ["instagramLiveData", params],
     fetchInstagranData,
     {
@@ -58,10 +67,6 @@ function InstagramBrick({
   );
   console.log("graphData", graphData);
 
-  // useEffect(() => {
-  //   fetchBlocksAgain(reFetchBricks + 1);
-  // }, [blockData]);
-
   return (
     <div key={id} className="instagram-brick socialBlock">
       <Badge.Ribbon text={assetTypeIcons[assetType]}>
@@ -71,12 +76,12 @@ function InstagramBrick({
           actions={[
             <div className="socialBlock-green">
               {!fetching && (
-                <span className="socialBlock-green-green">
+                <span className="socialBlock-grey-counter">
                   {blockData?.followers?.toLocaleString()} Folowers
                 </span>
               )}
             </div>,
-            <div className="explore-deadline">
+            <div className="grey-counter">
               {!fetching && (
                 <span className="margin-left">
                   {blockData?.following?.toLocaleString()} following
@@ -84,7 +89,7 @@ function InstagramBrick({
               )}
             </div>,
 
-            <div className="explore-deadline">
+            <div className="grey-counter">
               {growth > 0 && !fetching ? (
                 <span className="socialBlock-green-green">
                   ({growth}%) <AiOutlineCaretUp />
@@ -105,27 +110,37 @@ function InstagramBrick({
             avatar={
               <Avatar
                 src={blockData?.profile_pic_url_proxy}
-                size={60}
+                size={expended ? 80 : 60}
                 round={false}
               />
             }
             title={blockData?.full_name}
-            description={`${blockData?.bio?.substring(0, 40)}${
-              blockData?.bio?.length > 40 ? "..." : ""
-            }`}
+            description={
+              !expended
+                ? `${blockData?.bio?.substring(0, 40)}${
+                    blockData?.bio?.length > 40 ? "..." : ""
+                  }`
+                : blockData?.bio
+            }
           />
           <div className={"margin-top-2"}>
             {graphData.length > 1 ? (
               <ResponsiveContainer width="100%" height={75}>
-                <LineChart width={300} height={100} data={graphData}>
-                  <Line
-                    type="monotone"
+                <AreaChart width={300} height={100} data={graphData}>
+                  <Area
+                    type="linear"
                     dataKey="followers"
-                    stroke="#32c56e"
-                    strokeWidth={2}
+                    stroke="#83B69F"
+                    fill="rgba(50, 197, 110, 0.1)"
+                    strokeWidth={3}
                   />
+                  {/* <Line type="monotone" dataKey="engagment" stroke="#82ca9d" /> */}
+                  {expended ? <CartesianGrid strokeDasharray="1 1" /> : null}
+                  {expended ? <XAxis dataKey={"date"} /> : null}
+                  {expended ? <YAxis /> : null}
                   <Tooltip />
-                </LineChart>
+                  {/* <Legend /> */}
+                </AreaChart>
               </ResponsiveContainer>
             ) : (
               <div className="graph-placeholder">
@@ -133,7 +148,7 @@ function InstagramBrick({
                   loop
                   play
                   style={{
-                    paddingTop: "10%",
+                    // paddingTop: "10%",
                     margin: "auto",
                     width: 100,
                     height: 100,

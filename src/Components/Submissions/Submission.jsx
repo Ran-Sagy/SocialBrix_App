@@ -71,7 +71,7 @@ function Submission({
         <Card
           hoverable
           actions={[
-            <div className="explore-deadline">
+            <div className="grey-counter">
               <PlayCircleOutlined />
               <span
                 onClick={() => addSongToPlaylist(submission)}
@@ -80,7 +80,7 @@ function Submission({
                 {"Play"}
               </span>{" "}
             </div>,
-            <div className="explore-deadline">
+            <div className="grey-counter">
               {rate ? (
                 <>
                   <Row className="flex-row">

@@ -8,16 +8,16 @@ import { Menu } from "antd";
 import { logoutAndRemoveToken } from "../Services/userService";
 import { Link } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
-import { FiLogOut, FiUser, FiChevronDown } from "react-icons/fi";
+import { FiLogOut, FiUser } from "react-icons/fi";
 import { CgLockUnlock } from "react-icons/cg";
-import { MdDashboard, MdSettings } from "react-icons/md";
-import { IoAnalyticsSharp } from "react-icons/io5";
+// import { MdDashboard, MdSettings } from "react-icons/md";
+// import { IoAnalyticsSharp } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
 // import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth, AdminPortal } from "@frontegg/react";
 
 import { useSelector } from "react-redux";
-import SearchBox from "../Components/Search/SearchBox";
+// import SearchBox from "../Components/Search/SearchBox";
 
 const { Header } = Layout;
 
@@ -25,24 +25,15 @@ function TheHeader({ userDetails }) {
   const { user } = useAuth();
   // const { user, isAuthenticated, isLoading, logout } = useAuth0();
   const fetching = useSelector((state) => state.fetching);
-  const userData = useSelector((state) => state.currentUserData);
+  // const userData = useSelector((state) => state.currentUserData);
   const [selectedNavBarItem, setSelectedNavBarItem] = useState("dashboard");
   const history = useHistory();
-
-  // console.log(user);
-  // console.log("currentUser", userDetails);
 
   const handleLogOut = () => {
     logoutAndRemoveToken();
     setTimeout(() => {
       window.location = "/account/logout";
     }, 1000);
-
-    // logout({ federated: true });
-    // setTimeout(() => {
-    //   logoutAndRemoveToken();
-    //   window.location = "/login";
-    // }, 2000);
   };
 
   const setSelectedNavItem = (item) => {
@@ -85,8 +76,8 @@ function TheHeader({ userDetails }) {
         >
           <div className="header-logo">
             <img
-              style={{ padding: "10px" }}
-              src="https://res.cloudinary.com/prodme-app-cloud-6/image/upload/v1639859653/SocialBrix__1_-removebg-preview_sj1aza.png"
+              style={{ padding: "5px" }}
+              src="https://res.cloudinary.com/prodme-app-cloud-6/image/upload/v1642377053/Kaching/SocialBrix__5_-removebg-preview_1_vh5wko.png"
               alt="Logo"
               // width="140px"
               height="72px"
@@ -94,7 +85,7 @@ function TheHeader({ userDetails }) {
           </div>
         </Col>
         {/* <Col lg={4} xl={4}></Col> */}
-        <Col lg={18} xl={18}>
+        <Col xl={18} lg={18} md={15} sm={14} xs={10}>
           <div className="header-menu">
             <div
               onClick={() => setSelectedNavItem("dashboard")}

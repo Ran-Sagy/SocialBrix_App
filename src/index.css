@@ -151,29 +151,29 @@
 } */
 
 .header-menu-item {
-  width: 6.5vw;
+  min-width: 100px;
   text-align: center;
   color: #000000b9;
   font-size: 1rem;
   margin-left: 0.5rem;
   font-family: "Lato", sans-serif;
-  font-weight: 400;
+  font-weight: 600;
 }
 .header-menu-item:hover {
   transform: scale(1.02);
   color: #32c56d;
-  width: 6.5vw;
+  min-width: 100px;
   text-align: center;
   font-size: 1rem;
   margin-left: 0.5rem;
   font-family: "Lato", sans-serif;
-  font-weight: 400;
+  font-weight: 600;
   cursor: pointer;
 }
 .header-menu-item-selected {
   /* border-bottom: 2px solid #32c56e; */
   color: #32c56d;
-  width: 6.5vw;
+  min-width: 100px;
   text-align: center;
   font-size: 1rem;
   margin-left: 0.5rem;
@@ -391,7 +391,7 @@
 }
 .socialBlock-green-green {
   font-family: "Lato", sans-serif;
-  margin-left: 0.2rem;
+  /* margin-left: 0.2rem; */
   color: #449c23;
 }
 .socialBlock-red {
@@ -412,13 +412,18 @@
 }
 .socialBlock .ant-card-meta-description {
   font-size: 0.9rem;
+  font-weight: bold;
   font-family: "Lato", sans-serif;
 }
 .socialBlock {
   width: 98%;
 }
-.socialBlock .ant-card {
-  /* height: 340px; */
+.socialBlock .grey-counter {
+  font-size: 0.85rem;
+  font-weight: bold;
+  font-family: "Lato", sans-serif;
+}
+.expended .ant-card {
 }
 
 /* Submission */
@@ -690,6 +695,7 @@
     #bc1888 100%
   );
 }
+
 .tiktok-brick .ant-ribbon {
   background: linear-gradient(45deg, #ee1d52 20%, #69c9d0 80%);
 }
@@ -704,4 +710,30 @@
 
 .youtube-brick .ant-ribbon-text {
   color: white;
+}
+.recharts-layer .recharts-cartesian-axis-tick {
+  font-family: "Lato", sans-serif;
+  font-size: 0.7rem;
+}
+
+.ant-modal-root .ant-modal {
+  width: 75% !important;
+}
+.ant-modal-root .ant-modal-header {
+  visibility: hidden;
+  max-height: 10px;
+}
+.ant-modal-root .ant-modal-footer {
+  visibility: hidden;
+  max-height: 10px;
+}
+.ant-modal-root .ant-modal-content {
+  border-radius: 20px !important;
+  background-color: #ffffff;
+}
+
+.ant-ribbon {
+  height: 30px !important;
+  font-size: 0.9rem !important;
+  border-radius: 20%;
 }
