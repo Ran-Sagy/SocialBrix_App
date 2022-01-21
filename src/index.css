@@ -737,3 +737,6 @@
   font-size: 0.9rem !important;
   border-radius: 20%;
 }
+.ant-input-affix-wrapper:hover {
+  border: 1px solid #85d4a7 !important;
+}

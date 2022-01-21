@@ -19,6 +19,7 @@ import { getGrowthByPersentage } from "../Utils/calculations";
 import { assetTypeIcons } from "../Utils/socialIcons";
 import { fetchTiktokData } from "../../Services/tiktokService";
 import moment from "moment";
+// import graphData from "../../mockData";
 
 function TikTokBrick({
   fetching = false,
@@ -75,6 +76,7 @@ function TikTokBrick({
       followers: event.followers,
     })
   );
+
   console.log("graphData", graphData);
 
   // useEffect(() => {
@@ -99,7 +101,7 @@ function TikTokBrick({
             <div className="grey-counter">
               {!fetching && (
                 <span className="margin-left">
-                  {blockData?.stats?.heart.toLocaleString()} Hearts
+                  {blockData?.stats?.heart.toLocaleString()} Likes
                 </span>
               )}
             </div>,

@@ -13,6 +13,7 @@ import "sweetalert2/src/sweetalert2.scss";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { FronteggProvider } from "@frontegg/react";
 import { Provider } from "react-redux";
+import { CookiesProvider } from "react-cookie";
 import storeConfig from "./store/configureStore";
 const store = storeConfig();
 const queryClient = new QueryClient();
@@ -29,13 +30,15 @@ ReactDOM.render(
       audience="https://checktoken/api"
     > */}
     <FronteggProvider contextOptions={contextOptions}>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <Provider store={store}>
-            <App />
-          </Provider>
-        </QueryClientProvider>
-      </BrowserRouter>
+      <CookiesProvider>
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
+            <Provider store={store}>
+              <App />
+            </Provider>
+          </QueryClientProvider>
+        </BrowserRouter>
+      </CookiesProvider>
     </FronteggProvider>
     {/* </Auth0Provider> */}
   </React.StrictMode>,
