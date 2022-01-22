@@ -41,22 +41,16 @@ function Dashboard({ user }) {
   const [greetResult, setGreetResult] = useState(false);
   const [userIsBeta, setUserIsBeta] = useState(false);
   const [passcode, setPasscode] = useState(null);
-  const [cookies, setCookie, removeCookie] = useCookies(["beta"]);
+  const [cookies, setCookie] = useCookies(["beta"]);
 
   useEffect(() => {
     const betaCheck = cookies.beta;
-    console.log("betaCheck", betaCheck);
-    console.log("userIsBeta", userIsBeta);
-
     if (betaCheck === process.env.REACT_APP_BETA_TESTERS) {
-      console.log("happend");
-      console.log("key", process.env.REACT_APP_BETA_TESTERS);
       setUserIsBeta(true);
     }
   }, []);
 
   const checkPasscode = () => {
-    console.log("passcode", passcode);
     if (passcode === process.env.REACT_APP_BETA_TESTERS) {
       setUserIsBeta(true);
       setCookie("beta", process.env.REACT_APP_BETA_TESTERS);
