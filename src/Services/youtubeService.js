@@ -14,6 +14,6 @@ export async function fetchYoutubeData(params) {
 export async function fetchYoutubeChannel(params) {
   return await http.post(`${apiUrl}/youtube/channel`, params);
 }
-export async function addYoutubeChannel(params) {
+export async function youtubeNewAcountApi(params) {
   return await http.post(`${apiUrl}/youtube/new-asset`, params);
 }

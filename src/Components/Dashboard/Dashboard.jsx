@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Button, Dropdown, Menu, Empty, Modal } from "antd";
+import { Row, Col, Button, Dropdown, Menu, Empty, Modal, Badge } from "antd";
 import * as text from "../../constants/dashboard.json";
 import greet from "../../Utils/greeter";
 import { useDispatch, useSelector } from "react-redux";
 import InstagramBrick from "../SocialBlocks/InstagramBrick";
+import TwitterBrick from "../SocialBlocks/TwitterBrick";
 import {
   fetchInstagranUserName,
   instagramNewAcountApi,
@@ -12,15 +13,20 @@ import {
   fetchTiktokUserName,
   tiktokNewAcountApi,
 } from "../../Services/tiktokService";
+import {
+  fetchTwitterUserName,
+  twitterNewAcountApi,
+} from "../../Services/twitterService";
 import { setFetchingStage } from "../../actions/fetching.actions";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { getUserBricks } from "../../Services/bricksService";
 import { SiTiktok } from "react-icons/si";
 import { FaInstagram } from "react-icons/fa";
 import { IoLogoYoutube } from "react-icons/io";
+import { FaTwitter } from "react-icons/fa";
 import TikTokBrick from "../SocialBlocks/TikTokBrick";
 import {
-  addYoutubeChannel,
+  youtubeNewAcountApi,
   fetchYoutubeChannel,
 } from "../../Services/youtubeService";
 import YoutubeBrick from "../SocialBlocks/YoutubeBrick";
@@ -29,6 +35,7 @@ import { Input, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useCookies } from "react-cookie";
+import { assetTypeIcons } from "../Utils/socialIcons";
 
 function Dashboard({ user }) {
   const dispatch = useDispatch();
@@ -177,6 +184,62 @@ function Dashboard({ user }) {
       }
     });
   };
+  const searchTwitterAcount = async () => {
+    Swal.fire({
+      title: "Enter Twitter username",
+      input: "text",
+      confirmButtonText: "Look up",
+      showLoaderOnConfirm: true,
+      preConfirm: async (username) => {
+        const params = { username: username, email: user?.email };
+        try {
+          const response = await fetchTwitterUserName(params);
+          console.log("fetchTwitterUserName", response);
+          return response;
+        } catch (error) {
+          console.log("error fetching username", error);
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (result.error) {
+          searchTwitterAcount();
+          return;
+        }
+        if (!result?.value?.data?.data?.user) {
+          console.log("NOT FOUND");
+          return;
+        }
+        console.log("result", result);
+        const avatarLarger =
+          result?.value.data.data.user.result.legacy.profile_image_url_https;
+
+        console.log("result-twitter", avatarLarger);
+        const selectedAcount = result?.value.data.data.user.result.legacy;
+        Swal.fire({
+          title: "Is this the acount you looking for?",
+          showDenyButton: true,
+          confirmButtonText: "Yes",
+          denyButtonText: `No, start again`,
+          imageUrl: avatarLarger,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire(
+              "Amazing!",
+              "Were adding this acount to your dashboard",
+              "success"
+            );
+            console.log("twitterUsername", selectedAcount);
+            // Add acount to DB
+            twitterNewAcountApi(selectedAcount);
+          } else {
+            searchTwitterAcount();
+          }
+        });
+      }
+    });
+  };
 
   const searchYoutubeAcount = async () => {
     Swal.fire({
@@ -232,7 +295,7 @@ function Dashboard({ user }) {
     const response = await instagramNewAcountApi(selectedAcount);
     console.log(response);
     if (response.data === "brick_is_set") {
-      Swal.fire("This acount is allready set", "success");
+      Swal.fire("This acount is allready set!");
     }
     setReFetchBricks(reFetchBricks + 1);
     dispatch(setFetchingStage(false));
@@ -242,7 +305,17 @@ function Dashboard({ user }) {
     const response = await tiktokNewAcountApi(selectedAcount);
     console.log(response);
     if (response.data === "brick_is_set") {
-      Swal.fire("This acount is allready set", "success");
+      Swal.fire("This acount is allready set!");
+    }
+    setReFetchBricks(reFetchBricks + 1);
+    dispatch(setFetchingStage(false));
+  };
+  const addYoutubeChannel = async (selectedAcount) => {
+    dispatch(setFetchingStage(true));
+    const response = await youtubeNewAcountApi(selectedAcount);
+    console.log(response);
+    if (response.data === "brick_is_set") {
+      Swal.fire("This acount is allready set!");
     }
     setReFetchBricks(reFetchBricks + 1);
     dispatch(setFetchingStage(false));
@@ -266,6 +339,11 @@ function Dashboard({ user }) {
           <IoLogoYoutube /> Youtube
         </div>
       </Menu.Item>
+      <Menu.Item>
+        <div onClick={searchTwitterAcount}>
+          <FaTwitter /> Twitter
+        </div>
+      </Menu.Item>
     </Menu>
   );
 
@@ -279,7 +357,7 @@ function Dashboard({ user }) {
               placeholder="Enter passcode, Beta tester."
               prefix={<RiLockPasswordFill />}
               suffix={
-                <Tooltip title="This is only required to allow Beta testers exclusivly at this moment.">
+                <Tooltip title="Please enter your Beta tester passcode.">
                   <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
                 </Tooltip>
               }
@@ -377,6 +455,24 @@ function Dashboard({ user }) {
                     />
                   </Col>
                 );
+              } else if (brick.type === "twitter") {
+                return (
+                  <Col
+                    onClick={() => setSelectedBrick(brick)}
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={12}
+                    xl={8}
+                  >
+                    <TwitterBrick
+                      assetType={brick.type}
+                      db={brick}
+                      twitter_username={brick.twitter_username}
+                      user={user}
+                    />
+                  </Col>
+                );
               } else if (brick.type === "youtube") {
                 return (
                   <Col
@@ -430,6 +526,14 @@ function Dashboard({ user }) {
                   assetType={selectedbrick.type}
                   db={selectedbrick}
                   instagram_username={selectedbrick.instagram_username}
+                  user={user}
+                  expended={true}
+                />
+              ) : selectedbrick.type === "twitter" ? (
+                <TwitterBrick
+                  assetType={selectedbrick.type}
+                  db={selectedbrick}
+                  twitter_username={selectedbrick.twitter_username}
                   user={user}
                   expended={true}
                 />

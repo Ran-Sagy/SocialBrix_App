@@ -4,41 +4,44 @@ import Avatar from "react-avatar";
 import { AiOutlineCaretUp, AiOutlineCaretDown } from "react-icons/ai";
 import { useQuery } from "react-query";
 import {
+  AreaChart,
   ResponsiveContainer,
   Tooltip,
-  AreaChart,
-  Area,
   CartesianGrid,
   XAxis,
   YAxis,
+  Area,
 } from "recharts";
 import Lottie from "react-lottie-player";
 import analyzing from "../../assets/analyzing.json";
-import { fetchInstagranData } from "../../Services/instagramService";
+// import { fetchInstagranData } from "../../Services/instagramService";
 import { getGrowthByPersentage } from "../Utils/calculations";
 import { assetTypeIcons } from "../Utils/socialIcons";
+import { fetchTwitterData } from "../../Services/twitterService";
 import moment from "moment";
+// import graphData from "../../mockData";
 
-function InstagramBrick({
+function TwitterBrick({
   fetching = false,
-  instagram_username,
+  twitter_username,
   id,
   assetType,
   db,
   user,
   expended = false,
-  fetchBlocksAgain,
-  reFetchBricks,
 }) {
+  // const [readyTofetch, setReadyToFetch] = useState(true);
+  console.log("twitter_username", twitter_username);
+
   const params = {
-    username: instagram_username,
+    username: twitter_username,
     email: user?.email,
   };
 
   console.log("params", params);
-  const { data: instagramLiveData } = useQuery(
-    ["instagramLiveData", params],
-    fetchInstagranData,
+  const { data: twitterLiveData } = useQuery(
+    ["twitterLiveData", params],
+    fetchTwitterData,
     {
       enabled: !!user?.email,
       staleTime: 60000 * 60 * 24, // 24 hours
@@ -50,46 +53,53 @@ function InstagramBrick({
 
   const { Meta } = Card;
 
-  const blockData = instagramLiveData?.data?.data;
-  const graph = instagramLiveData?.data?.graph;
+  const blockData = twitterLiveData?.data.data;
+  const graph = twitterLiveData?.data?.graph;
 
-  console.log("blockData-insta", blockData);
-  // console.log("graph123", graph);
-  // console.log("db", db);
+  console.log("blockData", blockData);
+  console.log("db", db);
 
   const growth = getGrowthByPersentage(
     db?.last_followers_count,
-    blockData?.followers
+    blockData?.followers_count
   );
+  console.log("growth", growth);
 
+  console.log("db.graph", db.graph);
   let graphData = [];
   graph?.map((event) =>
     graphData.push({
-      name: blockData?.full_name,
+      name: blockData?.name,
       date: moment(event.date).format("DD/MM/yyyy"),
       followers: event.followers,
     })
   );
+
   console.log("graphData", graphData);
 
+  // useEffect(() => {
+  //   fetchBlocksAgain(reFetchBricks + 1);
+  // }, [blockData]);
+
   return (
-    <div key={id} className="instagram-brick socialBlock">
+    <div key={id} className="twitter-brick socialBlock">
       <Badge.Ribbon text={assetTypeIcons[assetType]}>
         <Card
+          className={expended ? "expended" : ""}
           hoverable
-          loading={fetching || !blockData || !blockData?.full_name}
+          loading={fetching || !blockData || !blockData?.name}
           actions={[
             <div className="socialBlock-green">
               {!fetching && (
                 <span className="socialBlock-grey-counter">
-                  {blockData?.followers?.toLocaleString()} Folowers
+                  {blockData?.followers_count.toLocaleString()} Folowers
                 </span>
               )}
             </div>,
             <div className="grey-counter">
               {!fetching && (
                 <span className="margin-left">
-                  {blockData?.following?.toLocaleString()} following
+                  {blockData?.friends_count.toLocaleString()} Following
                 </span>
               )}
             </div>,
@@ -114,18 +124,18 @@ function InstagramBrick({
           <Meta
             avatar={
               <Avatar
-                src={blockData?.profile_pic_url_proxy}
+                src={blockData?.profile_image_url_https}
                 size={expended ? 80 : 60}
                 round={false}
               />
             }
-            title={blockData?.full_name}
+            title={blockData?.name}
             description={
               !expended
-                ? `${blockData?.bio?.substring(0, 40)}${
-                    blockData?.bio?.length > 40 ? "..." : ""
+                ? `${blockData?.description.substring(0, 40)}${
+                    blockData?.description.length > 40 ? "..." : ""
                   }`
-                : blockData?.bio
+                : blockData?.description
             }
           />
           <div className={"margin-top-2"}>
@@ -173,4 +183,4 @@ function InstagramBrick({
   );
 }
 
-export default InstagramBrick;
+export default TwitterBrick;

@@ -250,7 +250,7 @@
 
 /* Dashboard */
 .dashboard-body {
-  height: calc(100vh - 100px);
+  height: 100%;
 }
 .greeting {
   font-size: 1.6rem !important;
@@ -698,6 +698,9 @@
 
 .tiktok-brick .ant-ribbon {
   background: linear-gradient(45deg, #ee1d52 20%, #69c9d0 80%);
+}
+.twitter-brick .ant-ribbon {
+  background-color: #1da1f2;
 }
 
 .tiktok-brick .ant-ribbon-text {

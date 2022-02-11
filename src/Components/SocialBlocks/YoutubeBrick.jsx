@@ -14,10 +14,8 @@ import {
 } from "recharts";
 import Lottie from "react-lottie-player";
 import analyzing from "../../assets/analyzing.json";
-// import { fetchInstagranData } from "../../Services/instagramService";
 import { getGrowthByPersentage } from "../Utils/calculations";
 import { assetTypeIcons } from "../Utils/socialIcons";
-// import { fetchTiktokData } from "../../Services/tiktokService";
 import { fetchYoutubeData } from "../../Services/youtubeService";
 import moment from "moment";
 
@@ -65,9 +63,9 @@ function YoutubeBrick({
   let graphData = [];
   graph?.map((event) =>
     graphData.push({
-      name: blockData?.user?.uniqueId,
-      date: moment(event.date).format("MM/yyyy"),
-      subscribers: event.subscribers,
+      name: blockData?.snippet?.title,
+      date: moment(event.date).format("DD/MM/yyyy"),
+      followers: event.followers,
     })
   );
   console.log("graphData", graphData);
@@ -143,11 +141,11 @@ function YoutubeBrick({
           />
           <div className={"margin-top-2"}>
             {graphData.length > 1 ? (
-              <ResponsiveContainer width="100%" height={122}>
+              <ResponsiveContainer width="100%" height={expended ? 250 : 122}>
                 <AreaChart width={300} height={100} data={graphData}>
                   <Area
                     type="linear"
-                    dataKey="subscribers"
+                    dataKey="followers"
                     stroke="#83B69F"
                     fill="rgba(50, 197, 110, 0.1)"
                     strokeWidth={3}
