@@ -152,31 +152,28 @@
 
 .header-menu-item {
   min-width: 100px;
-  text-align: center;
   color: #000000b9;
   font-size: 1rem;
-  margin-left: 0.5rem;
+  margin-left: 1.2rem;
   font-family: "Lato", sans-serif;
   font-weight: 600;
 }
 .header-menu-item:hover {
   transform: scale(1.02);
-  color: #32c56d;
+  color: #83b69e;
   min-width: 100px;
-  text-align: center;
   font-size: 1rem;
-  margin-left: 0.5rem;
+  margin-left: 1.2rem;
   font-family: "Lato", sans-serif;
   font-weight: 600;
   cursor: pointer;
 }
 .header-menu-item-selected {
   /* border-bottom: 2px solid #32c56e; */
-  color: #32c56d;
+  color: #83b69e;
   min-width: 100px;
-  text-align: center;
   font-size: 1rem;
-  margin-left: 0.5rem;
+  margin-left: 1.2rem;
   font-family: "Lato", sans-serif;
   font-weight: bold;
 }
@@ -369,19 +366,27 @@
   font-weight: bold;
   padding: 0 0 2rem 2rem;
 }
-.explore-title-right {
+.lg-title {
+  font-size: 1.8rem !important;
+  font-family: "Lato", sans-serif;
+  font-weight: bold;
+}
+.md-title {
   font-size: 1.2rem !important;
   font-family: "Lato", sans-serif;
   font-weight: bold;
-  /* padding: 0.5rem 0 0.2rem 2rem; */
-  /* margin: auto; */
 }
-.explore-subtitle-small {
+.sm-title-grey {
+  font-size: 1rem !important;
+  color: #8f8f8f;
+  font-family: "Lato", sans-serif;
+  font-weight: bold;
+}
+.xs-title-grey {
   font-size: 0.8rem !important;
   color: #8f8f8f;
   font-family: "Lato", sans-serif;
   font-weight: bold;
-  /* padding: 0 0 0rem 2rem; */
 }
 .socialBlock-green {
   font-size: 0.8rem !important;
@@ -469,8 +474,29 @@
 }
 
 /* Global */
+.padding-3 {
+  padding: 3rem;
+}
+.padding-2 {
+  padding: 2rem;
+}
+.padding-1 {
+  padding: 1rem;
+}
+.pl-3 {
+  padding-left: 3rem;
+}
+.ml-2 {
+  margin-left: 0.4rem;
+}
 .margin-left {
   margin-left: 0.2rem;
+}
+.header-icon {
+  font-size: 1.1rem;
+  margin-right: 0.3rem;
+  position: relative;
+  top: 5%;
 }
 .margin-top {
   margin-top: 0.2rem;
@@ -497,6 +523,11 @@
 }
 .margin-left-2 {
   margin-left: 0.8rem;
+}
+.stick-to-bottom {
+  width: 25%;
+  position: fixed;
+  bottom: 10%;
 }
 
 /* ::-webkit-scrollbar {
@@ -740,6 +771,146 @@
   font-size: 0.9rem !important;
   border-radius: 20%;
 }
+
+.upgrade-body {
+  height: calc(100vh - 100px);
+}
 .ant-input-affix-wrapper:hover {
   border: 1px solid #85d4a7 !important;
+}
+
+.creditCardInfo {
+  margin-top: 1.8rem;
+  margin-bottom: 1.8rem;
+}
+.bIBabz {
+  width: 100% !important;
+  font-size: 1.2rem;
+  font-family: "Lato";
+  font-weight: 600;
+  transition: all 0.3s;
+}
+.cardNumber {
+  width: 17em !important;
+}
+.cardExperation {
+  width: 6em !important;
+}
+.cardCvc {
+  width: 4em !important;
+}
+.creditCardWrapper .iXFeCj {
+  border-radius: 0.4em !important;
+}
+.creditCardWrapper .ijodDL {
+  border-color: #85d4a7 !important;
+  box-shadow: #85d4a7 0px 0px 0px 1px;
+}
+.creditCardWrapper .eFHdNf {
+  border-color: #85d4a7 !important;
+  box-shadow: #85d4a7 0px 0px 0px 1px;
+}
+.cardIsValidBox {
+  display: flex !important;
+  justify-content: center;
+}
+.cardIsValid {
+  font-size: 1.6rem;
+  align-self: center;
+  margin-top: auto;
+}
+.header-1 {
+  font-size: 1.6rem !important;
+  font-family: "Lato", sans-serif;
+  font-weight: bold;
+  padding-bottom: 0.6rem;
+}
+.header-2 {
+  font-size: 1.2rem !important;
+  font-family: "Lato", sans-serif;
+  font-weight: bold;
+  padding-bottom: 0.6rem;
+}
+.plans {
+  margin-bottom: 1.6rem;
+}
+.plans .selectedPlan {
+  border: 2px solid #85d4a7;
+  transform: scale(1.03);
+}
+.plans .ant-card :hover {
+  cursor: pointer;
+}
+
+.nameOnCard .ant-input-affix-wrapper {
+  font-size: 1.2rem !important;
+  font-family: "Lato" !important;
+  font-weight: 600;
+  border-radius: 0.4em !important;
+  border: 1px solid #bdbdbd;
+  box-shadow: inset 0px 1px 2px #e5e5e5;
+}
+.nameOnCard .ant-input-affix-wrapper-focused {
+  border-radius: 0.4em !important;
+  border-color: #85d4a7 !important;
+  box-shadow: #85d4a7 0px 0px 0px 1px;
+}
+
+.presToPay .ant-btn:hover {
+  background-color: #4fbb80;
+  color: white;
+  transform: scale(1.01);
+}
+.presToPay {
+  padding-top: 3rem;
+}
+.presToPay button .ant-btn {
+  font-size: 4rem !important;
+  font-family: "Lato", sans-serif !important;
+  height: 3rem;
+}
+.pricing-head {
+  display: flex;
+}
+.secondary-title-small {
+  font-size: 0.9rem !important;
+  font-family: "Lato" !important;
+  font-weight: 600;
+  color: #bdbdbd;
+}
+.icon-wrapper-box {
+  background: linear-gradient(
+    90deg,
+    rgba(162, 208, 171, 1) 0%,
+    rgba(133, 212, 167, 0.6421919109440651) 50%,
+    rgba(161, 218, 143, 0.0959734235491071) 100%
+  );
+  border-radius: 20%;
+}
+.icon-wrapper {
+  font-size: 2rem;
+  padding-left: 0.2rem;
+  padding-top: 0.4rem;
+}
+.icon-wrapper:hover {
+  font-size: 2rem;
+  padding-left: 0.2rem;
+  padding-top: 0.4rem;
+  transition: all 0.3s;
+  transform: rotate(15deg);
+}
+.creditCardSection {
+  border-radius: 0.8em;
+  background-color: #dee8deb2;
+  margin-top: 3rem;
+}
+.theCard {
+  position: relative;
+  top: -2.5rem;
+}
+.final-price-box {
+  margin-left: auto;
+  width: 85%;
+  border: 1px solid white;
+  border-radius: 1em;
 }

@@ -10,11 +10,13 @@ import { Link } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { CgLockUnlock } from "react-icons/cg";
-// import { MdDashboard, MdSettings } from "react-icons/md";
+import { SiGoogleanalytics } from "react-icons/si";
+import { MdDashboard } from "react-icons/md";
+import { CgOptions } from "react-icons/cg";
 // import { IoAnalyticsSharp } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
 // import { useAuth0 } from "@auth0/auth0-react";
-import { useAuth, AdminPortal } from "@frontegg/react";
+import { useAuth, AdminPortal, useTenantsState } from "@frontegg/react";
 
 import { useSelector } from "react-redux";
 // import SearchBox from "../Components/Search/SearchBox";
@@ -23,6 +25,7 @@ const { Header } = Layout;
 
 function TheHeader({ userDetails }) {
   const { user } = useAuth();
+  const tenantsState = useTenantsState();
   // const { user, isAuthenticated, isLoading, logout } = useAuth0();
   const fetching = useSelector((state) => state.fetching);
   // const userData = useSelector((state) => state.currentUserData);
@@ -52,7 +55,7 @@ function TheHeader({ userDetails }) {
         </div>
       </Menu.Item>
       <Menu.Item key="3" icon={<CgLockUnlock />} title="Upgrade">
-        <Link to="/profile">
+        <Link to="/upgrade">
           <div className="menu-row">Upgrade</div>
         </Link>
       </Menu.Item>
@@ -77,15 +80,15 @@ function TheHeader({ userDetails }) {
           <div className="header-logo">
             <img
               style={{ padding: "5px" }}
-              src="https://res.cloudinary.com/prodme-app-cloud-6/image/upload/v1642377053/Kaching/SocialBrix__5_-removebg-preview_1_vh5wko.png"
+              src="https://res.cloudinary.com/prodme-app-cloud-6/image/upload/v1644706686/Kaching/SocialBrix-2-removebg-preview_xyiy4t.png"
               alt="Logo"
-              // width="140px"
-              height="72px"
+              width="140px"
+              // height="72px"
             />
           </div>
         </Col>
         {/* <Col lg={4} xl={4}></Col> */}
-        <Col xl={18} lg={18} md={15} sm={14} xs={10}>
+        <Col span={16}>
           <div className="header-menu">
             <div
               onClick={() => setSelectedNavItem("dashboard")}
@@ -95,9 +98,9 @@ function TheHeader({ userDetails }) {
                   : "header-menu-item"
               }
             >
-              {/* <span style={{ marginRight: "0.3rem" }}>
+              <span className="header-icon">
                 <MdDashboard />
-              </span> */}
+              </span>
               Dashboard
             </div>
             <div
@@ -108,9 +111,9 @@ function TheHeader({ userDetails }) {
                   : "header-menu-item"
               }
             >
-              {/* <span style={{ marginRight: "0.3rem" }}>
-                <IoAnalyticsSharp />
-              </span> */}
+              <span className="header-icon ml-2">
+                <SiGoogleanalytics />
+              </span>
               Analytics
             </div>
             <div
@@ -121,15 +124,18 @@ function TheHeader({ userDetails }) {
                   : "header-menu-item"
               }
             >
-              {/* <span style={{ marginRight: "0.3rem" }}>
-                <MdSettings />{" "}
-              </span> */}
-              Settings{" "}
+              <span className="header-icon">
+                <CgOptions />
+              </span>
+              Settings
             </div>
           </div>
         </Col>
-        <Col xs={3} sm={2} md={2} lg={1} xl={1}>
-          {fetching && <Spin style={{ padding: "1rem" }} />}
+        <Col span={1}>{fetching && <Spin style={{ padding: "1rem" }} />}</Col>
+        <Col className="sm-title-grey max-width-1" span={2}>
+          {tenantsState?.tenants[0]?.name
+            ? tenantsState?.tenants[0]?.name
+            : user.name}
         </Col>
         <Col xs={3} sm={2} md={3} lg={2} xl={2}>
           <span className="header-user-dropdown">

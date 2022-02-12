@@ -14,6 +14,7 @@ import { setCurrentUserData } from "./actions/user.actions";
 import Dashboard from "./Components/Dashboard/Dashboard";
 // import Lottie from "react-lottie-player";
 import Analytics from "./Components/analytics/Analytics";
+import Upgrade from "./Components/upgrade/Upgrade";
 import { useAuth } from "@frontegg/react";
 // import {  useAuthUser } from "@frontegg/react";
 
@@ -67,6 +68,7 @@ function App() {
           <Content className="content">
             <Switch>
               <Analytics path={"/analytics"} user={user} />
+              <Upgrade path={"/upgrade"} user={user} />
               <Dashboard path={"/"} user={user} />
             </Switch>
           </Content>

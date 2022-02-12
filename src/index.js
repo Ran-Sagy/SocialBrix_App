@@ -10,11 +10,13 @@ import "../src/antd.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import "react-jinke-music-player/assets/index.css";
 import "sweetalert2/src/sweetalert2.scss";
+import "react-credit-cards/es/styles-compiled.css";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { FronteggProvider } from "@frontegg/react";
 import { Provider } from "react-redux";
 import { CookiesProvider } from "react-cookie";
 import storeConfig from "./store/configureStore";
+
 const store = storeConfig();
 const queryClient = new QueryClient();
 const contextOptions = {
